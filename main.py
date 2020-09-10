@@ -3,28 +3,29 @@ import numpy as np
 from matplotlib import pyplot as plt
 import itertools
 
+intercept_symmetry_map = {
+    'x_intercept': 'x-Axis',
+    'y_intercept': 'y-Axis'
+}
+
 def plot_points(points):
     data = np.array(points)
     x, y = data.T
-    plt.plot(x, y, '-g')
+    plt.plot(x, y, 'go')
     plt.show()
 
 
-def find_solution_points(start, end):
+def find_solution_points(equation, start, end):
     integers = [x for x in range(start, end + 1)]
     solution_points = []
     for x in integers:
         for y in integers:
-            # Replace with desired equation
-            # todo: pass equation in as parameter
-            if (y == x ** 3 - (4 * x)):
+            if (eval(equation)):
                 # print(f'({x}, {y})')
                 solution_points.append([x, y])
     print('Solution points: ', solution_points)
-    plot_points(solution_points)
     return solution_points
     
-solution_points = find_solution_points(-1000, 1000)
 
 def find_intercepts(points):
     intercepts = []
@@ -37,26 +38,30 @@ def find_intercepts(points):
 
 
 def find_intercept_type(intercept):
-    # todo: support origin symmetry
-    if (intercept[0] == 0):
+    if (intercept == [0, 0]):
+        return 'origin_symmetry'
+    if (intercept[0] == 0 and intercept[1] != 0):
         return 'y_intercept'
-    if (intercept[1] == 0):
+    if (intercept[0] != 0 and intercept[1] == 0):
         return 'x_intercept'
-    return False
 
 
 # finds x-Axis, y-Axis, and origin symmetry 
 def find_symmetry(points):
-    # todo
+    # todo:
+    # find intercpets
+    # check for orgin symmetry
+    # check for y-Axis symmetry
+    # check for x-Axis symmetry
     return
 
 
-# The points passed in must be either before or after an intercept, exclusive
-# of the actual intercept
-def augment_symmetry(points, intercept, symmetry):
+# The points passed in must be either before or after an intercept, intercept exclusive.
+def add_symmetry(points, intercept, symmetry):
     print('Symmetry type: ', symmetry)
-    print('On segment: ', points)
+    print('On sequence: ', points)
     print('With intercept: ', intercept)
+
     augemented_sequence = []
     if (symmetry == 'x-Axis'):
         if (points[0][0] > 0):
@@ -86,13 +91,16 @@ def augment_symmetry(points, intercept, symmetry):
 def generate_mirrors_from_intercepts(points):
     print('Original sequence: ', points)
     intercepts = find_intercepts(points);
-    generated_mirrors = []
+    augmented_sequences = []
     for intercept in intercepts:
-        print('Intercept: ', intercept)
+        print('Generating mirror for sequence with intercept: ', intercept)
         index_for_intercept = points.index(intercept)
+
         sequence_before_intercept = points[:index_for_intercept]
-        # sequence_after_intercept = intercepts[index_for_intercept + 1:]
         print('Sequence before intercept: ', sequence_before_intercept)
+
+        # sequence_after_intercept = intercepts[index_for_intercept + 1:]
+        # print('Sequence before intercept: ', sequence_after_intercept)
 
         intercept_type = find_intercept_type(intercept)
 
@@ -101,25 +109,29 @@ def generate_mirrors_from_intercepts(points):
 
         print('Intercept type: ', intercept_type)
 
-        intercept_symmetry_map = {
-            'x_intercept': 'x-Axis',
-            'y_intercept': 'y-Axis'
-        }
+        if (len(sequence_before_intercept) == 0):
+            print('No points found before intercept, exiting')
+            return []
 
-        mirror_sequence1 = augment_symmetry(sequence_before_intercept, intercept, intercept_symmetry_map[intercept_type])
-        # mirror_sequence2 = augment_symmetry(sequence_after_intercept, intercept_symmetry_map[intercept_type])
+        augemented_sequence_1 = add_symmetry(sequence_before_intercept, intercept, intercept_symmetry_map[intercept_type])
+        # augemented_sequence_2 = add_symmetry(sequence_after_intercept, intercept, intercept_symmetry_map[intercept_type])
 
         mirrors_from_intercept = {
             'intercept': intercept,
-            'mirror1': mirror_sequence1,
-            # 'mirror2': mirror_sequence2
+            'mirror1': augemented_sequence_1,
+            # 'mirror2': augemented_sequence_2
         }
 
-        generated_mirrors.append(mirrors_from_intercept)
+        augmented_sequences.append(mirrors_from_intercept)
 
-    print(generated_mirrors)
-    for mirror in generated_mirrors:
-        plot_points(mirror['mirror1'])
-    return generated_mirrors
+    print(augmented_sequences)
+    return augmented_sequences
 
-generate_mirrors_from_intercepts(solution_points)
+
+####### Tests (todo: move and expand into pytest file)
+solution_points = find_solution_points('x - y ** 2 == 1', -100, 100)
+plot_points(solution_points)
+
+mirrored_sequences = generate_mirrors_from_intercepts(solution_points)
+for mirror in mirrored_sequences:
+    plot_points(mirror['mirror1'])
