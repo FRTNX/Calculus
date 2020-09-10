@@ -1,21 +1,35 @@
+import json
 import math
+import itertools
 import numpy as np                   
 from matplotlib import pyplot as plt
-import itertools
+from text_color import color
 
-intercept_symmetry_map = {
+INTERCEPT_SYMMETRY_MAP = {
     'x_intercept': 'x-Axis',
     'y_intercept': 'y-Axis'
 }
 
-def plot_points(points):
-    data = np.array(points)
-    x, y = data.T
-    plt.plot(x, y, 'go')
+def plot_points(points_array):
+    plot_params = []
+    graph_colors = ['b', 'g', 'r', 'c', 'y', 'm', 'k'] # todo: add more colors and read from file
+    if (len(points_array) > len(graph_colors)):
+        print('ReallyDumbError: Not enough colors to plot graphs. Max: ', len(graph_colors))
+
+    for points in points_array:
+        data = np.array(points)
+        x, y = data.T
+        plot_params.append(x)
+        plot_params.append(y)
+
+        graph_color = graph_colors.pop()
+        plot_params.append(f'-{graph_color}') # todo: pop value from color array
+
+    plt.plot(*plot_params)
     plt.show()
 
 
-def find_solution_points(equation, start, end):
+def find_solution_points(equation, start=-10, end=10):
     integers = [x for x in range(start, end + 1)]
     solution_points = []
     for x in integers:
@@ -23,7 +37,7 @@ def find_solution_points(equation, start, end):
             if (eval(equation)):
                 # print(f'({x}, {y})')
                 solution_points.append([x, y])
-    print('Solution points: ', solution_points)
+    print('Solution points for ' + color(equation, 'blue') + f': {solution_points}')
     return solution_points
     
 
@@ -57,7 +71,7 @@ def find_symmetry(points):
 
 
 # The points passed in must be either before or after an intercept, intercept exclusive.
-def add_symmetry(points, intercept, symmetry):
+def mirror_sequence(points, intercept, symmetry):
     print('Symmetry type: ', symmetry)
     print('On sequence: ', points)
     print('With intercept: ', intercept)
@@ -113,8 +127,8 @@ def generate_mirrors_from_intercepts(points):
             print('No points found before intercept, exiting')
             return []
 
-        augemented_sequence_1 = add_symmetry(sequence_before_intercept, intercept, intercept_symmetry_map[intercept_type])
-        # augemented_sequence_2 = add_symmetry(sequence_after_intercept, intercept, intercept_symmetry_map[intercept_type])
+        augemented_sequence_1 = mirror_sequence(sequence_before_intercept, intercept, INTERCEPT_SYMMETRY_MAP[intercept_type])
+        # augemented_sequence_2 = mirror_sequence(sequence_after_intercept, intercept, INTERCEPT_SYMMETRY_MAP[intercept_type])
 
         mirrors_from_intercept = {
             'intercept': intercept,
@@ -128,10 +142,58 @@ def generate_mirrors_from_intercepts(points):
     return augmented_sequences
 
 
-####### Tests (todo: move and expand into pytest file)
-solution_points = find_solution_points('x - y ** 2 == 1', -100, 100)
-plot_points(solution_points)
+def stringify_points(points):
+    stringified_points = []
+    for point in points:
+        stringified_points.append(str(point))
+    return stringified_points
 
-mirrored_sequences = generate_mirrors_from_intercepts(solution_points)
-for mirror in mirrored_sequences:
-    plot_points(mirror['mirror1'])
+
+def listify_points(points):
+    listified_points = []
+    for point in points:
+        listified_points.append(json.loads(point))
+    return listified_points
+
+
+def find_intersections(graph_equations, solution_points_array = []):
+    solution_points_for_graphs = []
+    if (len(solution_points_array) == 0):
+        for graph in graph_equations:
+            print('Finding solution points for graph: ', graph)
+            graph_solution_points = find_solution_points(graph)
+            solution_points_for_graphs.append(stringify_points(graph_solution_points))
+    else:
+        for solution_points in solution_points_array:
+            solution_points_for_graphs.append(stringify_points(solution_points))
+
+    print('Solution points for graphs: ', solution_points_for_graphs)
+    
+    # intersections = [solution_point for solution_point in solution_points_for_graphs[0] \
+    #     if solution_point in solution_points_for_graphs[1]]
+    intersections = set.intersection(*[set(list) for list in solution_points_for_graphs])
+    print('Intersections: ', list(intersections))
+
+    normalized_points = []
+    for points in solution_points_for_graphs:
+        normalized_points.append(listify_points(points))
+
+    plot_points(normalized_points)
+
+    return listify_points(list(intersections))
+
+
+####### Tests (todo: move and expand into pytest file)
+# solution_points = find_solution_points('x - y ** 2 == 1', -100, 100)
+# plot_points(solution_points)
+
+# mirrored_sequences = generate_mirrors_from_intercepts(solution_points)
+# for mirror in mirrored_sequences:
+#     plot_points(mirror['mirror1'])
+
+# s1 = find_solution_points('x - y == 1')
+# s2 = find_solution_points('x ** 2 - y == 3')
+
+# find_intersections([], [s1, s2])
+
+# find_intersections(['x - y == 1', 'x ** 2 - y == 3', 'x - y ** 2 == 1'])
