@@ -235,7 +235,7 @@ def listify_points(points):
     return listified_points
 
 
-def find_intersections(graph_equations, solution_points_array = []):
+def find_intersections(graph_equations, solution_points_array = [], plot_graphs = False):
     solution_points_for_graphs = []
     if (len(solution_points_array) == 0):
         for graph in graph_equations:
@@ -251,33 +251,11 @@ def find_intersections(graph_equations, solution_points_array = []):
     intersections = set.intersection(*[set(list) for list in solution_points_for_graphs])
     print('Intersections: ', list(intersections))
 
-    # normalized_points = []
-    # for soulution_points in solution_points_for_graphs:
-    #     normalized_points.append(listify_points(soulution_points))
+    if (plot_graphs):
+        normalized_points = []
+        for soulution_points in solution_points_for_graphs:
+            normalized_points.append(listify_points(soulution_points))
 
-    # plot_points(normalized_points)
+        plot_points(normalized_points)
 
     return listify_points(list(intersections))
-
-
-####### Tests (todo: move and expand into pytest file)
-# solution_points = find_solution_points('y == (x ** 3) - x', -100, 100)
-# plot_points(solution_points)
-
-# mirrored_sequences = generate_mirrors_from_intercepts(solution_points)
-# print(mirrored_sequences)
-# for mirror in mirrored_sequences:
-#     plot_points(mirror['mirror1'])
-
-# s1 = find_solution_points('x - y == 1')
-# s2 = find_solution_points('x ** 2 - y == 3')
-
-# find_intersections([], [s1, s2])
-
-# find_intersections(['x - y == 1', 'x ** 2 - y == 3', 'x - y ** 2 == 1'])
-
-# Exercises
-# plot_points([find_solution_points('y == (0.5 * x) + 2')])
-# plot_points([find_solution_points('y == math.sqrt((9 - (x ** 2)))')])
-# plot_points([find_solution_points('y == 4 - (x ** 2)')])
-# plot_points([find_solution_points('x - y ** 2 == 1')])
