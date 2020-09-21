@@ -1,5 +1,6 @@
 import json
 import math
+import random
 import itertools
 import numpy as np                   
 from matplotlib import pyplot as plt
@@ -15,9 +16,6 @@ def plot_points(points_array):
     plot_params = []
     graph_colors = ['b', 'r', 'c', 'y', 'm', 'k', 'g'] # todo: add more colors and read from file
 
-    if (len(points_array) > len(graph_colors)):
-        print('ReallyDumbError: Not enough colors to plot graphs. Max: ', len(graph_colors))
-
     for points in points_array:
         data = np.array(points)
         x, y = data.T
@@ -25,7 +23,7 @@ def plot_points(points_array):
         plot_params.append(x)
         plot_params.append(y)
 
-        graph_color = graph_colors.pop()
+        graph_color = random.choice(graph_colors)
         plot_params.append(f'-{graph_color}') # todo: pop value from color array
 
     plt.plot(*plot_params)
@@ -259,3 +257,10 @@ def find_intersections(graph_equations, solution_points_array = [], plot_graphs 
         plot_points(normalized_points)
 
     return listify_points(list(intersections))
+
+
+def calculate_slope(point_a, point_b):
+    try:
+        return (point_b[1] - point_a[1]) / (point_b[0] - point_a[0])
+    except ZeroDivisionError:
+        return None

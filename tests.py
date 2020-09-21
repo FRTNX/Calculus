@@ -99,3 +99,10 @@ def test_find_intersections():
 
     assert [-1, -2] in intersections
     assert [2, 1] in intersections
+
+
+def test_calculate_slope():
+    assert calculate_slope([-2, 0], [3, 1]) == 0.2 # rise /
+    assert calculate_slope([-1, 2], [2, 2]) == 0.0 # horizontal --
+    assert calculate_slope([0, 4], [1, -1]) == -5  # fall \
+    assert calculate_slope([3, 4], [3, 1]) == None # vertical |
