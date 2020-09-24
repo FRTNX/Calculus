@@ -29,6 +29,7 @@ def plot_points(points_array):
     plt.plot(*plot_params)
     plt.show()
 
+
 def check_for_origin_symmetry(points, sequence_before_intercept):
     if ([0, 0] not in points):
         return False
