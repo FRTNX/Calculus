@@ -6,11 +6,20 @@ from unittest.mock import Mock
 from main import *
 
 
-def test_find_solution_points():
+def test_find_solution_points_from_graph_equation():
     graph_equation = 'y == (x ** 3) - x'
     expected_solution_points = [[-4, -60], [-3, -24], [-2, -6], [-1, 0], [0, 0], [1, 0], [2, 6], [3, 24], [4, 60]]
-    solution_points = find_solution_points(graph_equation, -100, 100)
+    solution_points = find_solution_points_from_graph_equation(graph_equation, -100, 100)
     assert solution_points == expected_solution_points
+
+
+def test_find_solution_points_from_point_slope():
+    expected_equation = 'y == (3 * x) - 5' # simplified
+
+    solution_points_from_point_slope = find_solution_points_from_point_slope([1, -2], 3, -10, 10)
+    solution_points_from_graph_equation = find_solution_points_from_graph_equation(expected_equation, -10, 10)
+
+    assert solution_points_from_point_slope == solution_points_from_graph_equation 
 
 
 def test_find_intercepts():

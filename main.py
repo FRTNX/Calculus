@@ -29,42 +29,6 @@ def plot_points(points_array):
     plt.plot(*plot_params)
     plt.show()
 
-
-def find_solution_points(equation, start=-100, end=100):
-    integers = [x for x in range(start, end + 1)]
-    solution_points = []
-    for x in integers:
-        for y in integers:
-            try:
-                if (eval(equation)):
-                    # print(f'({x}, {y})')
-                    solution_points.append([x, y])
-            except Exception as e:
-                pass
-    print('Solution points for ' + color(equation, 'blue') + f': {solution_points}')
-    check_for_symmetry(solution_points)
-    return solution_points
-    
-
-def find_intercepts(points):
-    intercepts = []
-    for point in points:
-        if 0 in point:
-            # print(point)
-            intercepts.append(point)
-    print('Intercepts: ', intercepts)
-    return intercepts
-
-
-def find_intercept_type(intercept):
-    if (intercept == [0, 0]):
-        return 'origin' # effectively both x- and y-intercept
-    if (intercept[0] == 0 and intercept[1] != 0):
-        return 'y_intercept'
-    if (intercept[0] != 0 and intercept[1] == 0):
-        return 'x_intercept'
-
-
 def check_for_origin_symmetry(points, sequence_before_intercept):
     if ([0, 0] not in points):
         return False
@@ -137,6 +101,47 @@ def check_for_symmetry(points):
         
     print('Symmetry details: ', symmetry_details)
     return symmetry_details
+
+
+def find_solution_points_from_graph_equation(equation, start=-100, end=100):
+    integers = [x for x in range(start, end + 1)]
+    solution_points = []
+    for x in integers:
+        for y in integers:
+            try:
+                if (eval(equation)):
+                    # print(f'({x}, {y})')
+                    solution_points.append([x, y])
+            except Exception as e:
+                pass
+    print('Solution points for ' + color(equation, 'blue') + f': {solution_points}')
+    check_for_symmetry(solution_points)
+    return solution_points
+
+
+def find_solution_points_from_point_slope(point, slope, start=-100, end=100):
+    x1, y1 = point
+    equation = f'y - ({y1}) == {slope} * (x - ({x1}))'
+    return find_solution_points_from_graph_equation(equation, start, end)
+    
+
+def find_intercepts(points):
+    intercepts = []
+    for point in points:
+        if 0 in point:
+            # print(point)
+            intercepts.append(point)
+    print('Intercepts: ', intercepts)
+    return intercepts
+
+
+def find_intercept_type(intercept):
+    if (intercept == [0, 0]):
+        return 'origin' # effectively both x- and y-intercept
+    if (intercept[0] == 0 and intercept[1] != 0):
+        return 'y_intercept'
+    if (intercept[0] != 0 and intercept[1] == 0):
+        return 'x_intercept'
 
 
 # The points passed in must be either before or after an intercept, intercept exclusive.
@@ -238,7 +243,7 @@ def find_intersections(graph_equations, solution_points_array = [], plot_graphs 
     if (len(solution_points_array) == 0):
         for graph in graph_equations:
             print('Finding solution points for graph: ', graph)
-            graph_solution_points = find_solution_points(graph)
+            graph_solution_points = find_solution_points_from_graph_equation(graph)
             solution_points_for_graphs.append(stringify_points(graph_solution_points))
     else:
         for solution_points in solution_points_array:
