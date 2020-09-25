@@ -265,8 +265,15 @@ def find_intersections(graph_equations, solution_points_array = [], plot_graphs 
     return listify_points(list(intersections))
 
 
+# Params may either be point arrays , e.g., calculate_slope([x, y], [x1, y1]) or integers (where 
+# point_a would be the rise and point_b would be the run), e.g. calculate_slope(6, 21).
+# Returns either a ratio or a rate of change depending on whether the units of measure for the
+# x-axis and y-axis are the same or different. If different, a rate (or rate of change), if
+# alike, a ratio. Hu-fucking-zzah :)
 def calculate_slope(point_a, point_b):
     try:
-        return (point_b[1] - point_a[1]) / (point_b[0] - point_a[0])
+        if (type(point_a) == list and type(point_b) == list):
+            return (point_b[1] - point_a[1]) / (point_b[0] - point_a[0])
+        return point_a / point_b
     except ZeroDivisionError:
         return None
