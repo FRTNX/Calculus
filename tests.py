@@ -19,7 +19,16 @@ def test_find_solution_points_from_point_slope():
     solution_points_from_point_slope = find_solution_points_from_point_slope([1, -2], 3, -10, 10)
     solution_points_from_graph_equation = find_solution_points_from_graph_equation(expected_equation, -10, 10)
 
-    assert solution_points_from_point_slope == solution_points_from_graph_equation 
+    assert solution_points_from_point_slope == solution_points_from_graph_equation
+
+
+def test_find_solution_points_from_slope_intercept():
+    assert find_solution_points_from_slope_intercept([0, 1], 2) == find_solution_points_from_graph_equation('y == (2 * x) + 1')
+    assert find_solution_points_from_slope_intercept([0, 2], 0) == find_solution_points_from_graph_equation('y == 2')
+
+    slope = -0.3333333333333333
+    expected_equation = f'y == ({slope} * x) + 2'
+    assert find_solution_points_from_slope_intercept([0, 2], slope) == find_solution_points_from_graph_equation(expected_equation)
 
 
 def test_find_intercepts():
@@ -119,9 +128,11 @@ def test_calculate_slope():
 
 def test_is_parallel():
     assert is_parallel('(2 * x) - (3 * y) == 5', '(2 * x) - (3 * y) == 7') == True
+    assert is_parallel('(2 * x) - (3 * y) == 7', '(2 * x) - (3 * y) == 5') == True
     # todo: more tests
 
 
 def test_is_perpendicular():
     assert is_perpendicular('(2 * x) - (3 * y) == 5', '(3 * x) + (2 * y) == 4') == True
+    assert is_perpendicular('(3 * x) + (2 * y) == 4', '(2 * x) - (3 * y) == 5') == True
     # todo: more tests

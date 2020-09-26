@@ -132,6 +132,15 @@ def find_solution_points_from_point_slope(point, slope, start=None, end=None):
     x1, y1 = point
     equation = f'y - ({y1}) == {slope} * (x - ({x1}))'
     return find_solution_points_from_graph_equation(equation, start, end)
+
+
+def find_solution_points_from_slope_intercept(y_intercept, slope, start=None, end=None):
+    if (y_intercept[0] != 0):
+        raise Exception('Invalid intercept, x value must be 0')
+
+    y_value = y_intercept[1]
+    equation = f'y == ({slope} * x) + {y_value}'
+    return find_solution_points_from_graph_equation(equation, start, end)
     
 
 def find_intercepts(points):
