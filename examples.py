@@ -13,7 +13,7 @@ def plot_intersecting_randomness(number_of_graphs = 10, int_range = [-10, 10]):
 
 # Demonstrates how when the x- and y-axes have different units of measure
 # the slope becomes a rate or a rate of change. When the units of measure are the 
-# sane the slope is a ratio.
+# same the slope is a ratio.
 def calculate_population_growth(point_a, point_b):
     growth_rate = calculate_slope(point_a, point_b)
     # print(f'Population in this region is growing at {growth_rate} people per year')

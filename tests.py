@@ -115,3 +115,13 @@ def test_calculate_slope():
     assert calculate_slope([-1, 2], [2, 2]) == 0.0 # horizontal --
     assert calculate_slope([0, 4], [1, -1]) == -5  # fall \
     assert calculate_slope([3, 4], [3, 1]) == None # vertical |
+
+
+def test_is_parallel():
+    assert is_parallel('(2 * x) - (3 * y) == 5', '(2 * x) - (3 * y) == 7') == True
+    # todo: more tests
+
+
+def test_is_perpendicular():
+    assert is_perpendicular('(2 * x) - (3 * y) == 5', '(3 * x) + (2 * y) == 4') == True
+    # todo: more tests

@@ -2,9 +2,12 @@ import json
 import math
 import random
 import itertools
+import configparser
 import numpy as np                   
 from matplotlib import pyplot as plt
 from text_color import color
+
+config = configparser.ConfigParser()
 
 INTERCEPT_SYMMETRY_MAP = {
     'origin': 'origin',
@@ -104,7 +107,12 @@ def check_for_symmetry(points):
     return symmetry_details
 
 
-def find_solution_points_from_graph_equation(equation, start=-100, end=100):
+def find_solution_points_from_graph_equation(equation, range_min=None, range_max=None):
+    config.read('config.ini')
+
+    start = range_min if range_min != None else int(config['solution_points']['min'])
+    end = range_max if range_max != None else int(config['solution_points']['max'])
+
     integers = [x for x in range(start, end + 1)]
     solution_points = []
     for x in integers:
@@ -120,7 +128,7 @@ def find_solution_points_from_graph_equation(equation, start=-100, end=100):
     return solution_points
 
 
-def find_solution_points_from_point_slope(point, slope, start=-100, end=100):
+def find_solution_points_from_point_slope(point, slope, start=None, end=None):
     x1, y1 = point
     equation = f'y - ({y1}) == {slope} * (x - ({x1}))'
     return find_solution_points_from_graph_equation(equation, start, end)
@@ -277,3 +285,31 @@ def calculate_slope(point_a, point_b):
         return point_a / point_b
     except ZeroDivisionError:
         return None
+
+
+def is_parallel(graph_a, graph_b):
+    graph_a_solution_points = find_solution_points_from_graph_equation(graph_a)
+    graph_b_solution_points = find_solution_points_from_graph_equation(graph_b)
+
+    if (len(graph_a_solution_points) < 2 or len(graph_b_solution_points) < 2):
+        print('Not enough solution points to determine parallelity')
+        return None
+    
+    graph_a_slope = calculate_slope(graph_a_solution_points[0], graph_a_solution_points[1])
+    graph_b_slope = calculate_slope(graph_b_solution_points[0], graph_b_solution_points[1])
+
+    return graph_a_slope == graph_b_slope
+
+
+def is_perpendicular(graph_a, graph_b):
+    graph_a_solution_points = find_solution_points_from_graph_equation(graph_a)
+    graph_b_solution_points = find_solution_points_from_graph_equation(graph_b)
+
+    if (len(graph_a_solution_points) < 2 or len(graph_b_solution_points) < 2):
+        print('Not enough solution points to determine perpendicularity')
+        return None
+    
+    graph_a_slope = calculate_slope(graph_a_solution_points[0], graph_a_solution_points[1])
+    graph_b_slope = calculate_slope(graph_b_solution_points[0], graph_b_solution_points[1])
+
+    return abs(graph_a_slope) == abs(1 / graph_b_slope)
